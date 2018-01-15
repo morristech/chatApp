@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.prabhat.chatapp.extra.Constants;
+import com.example.prabhat.chatapp.extra.SharedPrefUtil;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,9 +26,11 @@ public class PresenterImpl implements ChatInterface.Presenter {
 
     @Override
     public void sendMessageToFirebaseUser(final Context context, final ChatModel chatModel, String string) {
+        FcmNotificationBuilder.initialize().firebaseToken(SharedPrefUtil.getInstance(context).getString(Constants.FIREBASE_REC_TOKEN))
+                .message("hello").title("New Mess").send();
         final String room_type_1 = chatModel.getSenderUid() + "_" + chatModel.getReceiverUid();
         final String room_type_2 = chatModel.getReceiverUid() + "_" + chatModel.getSenderUid();
-       // view.getMessageSuccess(chatModel);
+        // view.getMessageSuccess(chatModel);
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance()
                 .getReference();
@@ -35,6 +38,7 @@ public class PresenterImpl implements ChatInterface.Presenter {
         databaseReference.child(Constants.MESS_TABLE)
                 .getRef()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(room_type_1)) {

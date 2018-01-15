@@ -11,13 +11,22 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.prabhat.chatapp.R;
+import com.example.prabhat.chatapp.UserNameModel;
 import com.example.prabhat.chatapp.Utils;
+import com.example.prabhat.chatapp.extra.Constants;
 import com.example.prabhat.chatapp.extra.SharedPrefUtil;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.prabhat.chatapp.MainActivity.RECEIVERID;
+import static com.example.prabhat.chatapp.extra.Constants.FIREBASE_REC_TOKEN;
 import static com.example.prabhat.chatapp.extra.Constants.UID;
 import static com.example.prabhat.chatapp.extra.FirebaseIDService.FIREBASE_TOKEN;
 
@@ -40,7 +49,22 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
     }
 
     private void getRecFirebaseId() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child(Constants.USER_TABLE).child(recId);
 
+// Attach a listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserNameModel post = dataSnapshot.getValue(UserNameModel.class);
+                SharedPrefUtil.getInstance(context).put(FIREBASE_REC_TOKEN,post.getFirebaseToken());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
     }
 
     private void bindViews() {
@@ -61,7 +85,7 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
         chatRecycle.setLayoutManager(new LinearLayoutManager(this));
         chatRecycle.setItemAnimator(new DefaultItemAnimator());
         chatRecycle.setAdapter(chatAdapter);
-        presenter.getMessageFromFirebaseUser(senderId,recId);
+        presenter.getMessageFromFirebaseUser(senderId, recId);
 
     }
 
@@ -102,7 +126,7 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
         chatModel.setSenderUid(senderId);
         chatModel.setReceiverUid(recId);
         chatModel.setTimestamp(String.valueOf(System.currentTimeMillis()));
-        presenter.sendMessageToFirebaseUser(context,chatModel,SharedPrefUtil.getInstance(context).getString(FIREBASE_TOKEN));
+        presenter.sendMessageToFirebaseUser(context, chatModel, SharedPrefUtil.getInstance(context).getString(FIREBASE_TOKEN));
     }
 
     @Override
