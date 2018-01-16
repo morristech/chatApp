@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.prabhat.chatapp.chat.ChatActivity;
+import com.example.prabhat.chatapp.extra.SharedPrefUtil;
 
 import java.util.ArrayList;
 
 import static com.example.prabhat.chatapp.MainActivity.RECEIVERID;
 import static com.example.prabhat.chatapp.MainActivity.SENDERID;
+import static com.example.prabhat.chatapp.extra.Constants.FIREBASE_REC_TOKEN;
 
 /**
  * Created by prabhat on 13/1/18.
@@ -67,6 +69,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         public void onClick(View view) {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra(RECEIVERID, itemList.get(getAdapterPosition()).getUid());
+            SharedPrefUtil.getInstance(context).put(FIREBASE_REC_TOKEN,itemList.get(getAdapterPosition()).getFirebaseToken());
             context.startActivity(intent);
         }
     }

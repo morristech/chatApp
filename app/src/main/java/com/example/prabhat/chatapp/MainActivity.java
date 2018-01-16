@@ -20,8 +20,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -32,6 +34,7 @@ import java.util.List;
 import static com.example.prabhat.chatapp.SplashActivty.NAME;
 import static com.example.prabhat.chatapp.SplashActivty.USER_ID;
 import static com.example.prabhat.chatapp.extra.Constants.UID;
+import static com.example.prabhat.chatapp.extra.FirebaseIDService.FIREBASE_TOKEN;
 
 public class MainActivity extends AppCompatActivity {
     TextView userName;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         logout = findViewById(R.id.logout);
         userName.setText(getIntent().getStringExtra(NAME));
         userId = SharedPrefUtil.getInstance(this).getString(UID);
+        updateUserData();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -85,6 +89,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void updateUserData() {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserNameModel userNameModel = new UserNameModel();
+                userNameModel.setEmail(SharedPrefUtil.getInstance(getApplicationContext()).getString("email"));
+                userNameModel.setFirebaseToken(SharedPrefUtil.getInstance(getApplicationContext()).getString(FIREBASE_TOKEN));
+                userNameModel.setName(SharedPrefUtil.getInstance(getApplicationContext()).getString("name"));
+                userNameModel.setUid(SharedPrefUtil.getInstance(getApplicationContext()).getString(UID));
+                ref.child("users").child(userId).push().setValue(userNameModel);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void getUsers() {
         FirebaseDatabase.getInstance()
                 .getReference()
@@ -111,4 +135,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 }

@@ -45,27 +45,27 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         bindViews();
-        getRecFirebaseId();
+       // getRecFirebaseId();
     }
 
-    private void getRecFirebaseId() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child(Constants.USER_TABLE).child(recId);
-
-// Attach a listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                UserNameModel post = dataSnapshot.getValue(UserNameModel.class);
-                SharedPrefUtil.getInstance(context).put(FIREBASE_REC_TOKEN,post.getFirebaseToken());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-    }
+//    private void getRecFirebaseId() {
+//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference ref = database.getReference().child(Constants.USER_TABLE).child(recId);
+//
+//// Attach a listener to read the data at our posts reference
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                UserNameModel post = dataSnapshot.getValue(UserNameModel.class);
+//                SharedPrefUtil.getInstance(context).put(FIREBASE_REC_TOKEN,post.getFirebaseToken());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });
+//    }
 
     private void bindViews() {
         presenter = new PresenterImpl(this);

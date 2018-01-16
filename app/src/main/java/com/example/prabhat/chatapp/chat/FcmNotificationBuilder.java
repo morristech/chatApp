@@ -44,6 +44,7 @@ public class FcmNotificationBuilder {
     private String mUid;
     private String mFirebaseToken;
     private String mReceiverFirebaseToken;
+
     private FcmNotificationBuilder() {
 
     }
@@ -57,10 +58,16 @@ public class FcmNotificationBuilder {
         return this;
     }
 
+    public FcmNotificationBuilder recToken(String token) {
+        mReceiverFirebaseToken = token;
+        return this;
+    }
+
     public FcmNotificationBuilder message(String message) {
         mMessage = message;
         return this;
     }
+
     public FcmNotificationBuilder firebaseToken(String firebaseToken) {
         mFirebaseToken = firebaseToken;
         return this;

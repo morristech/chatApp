@@ -153,6 +153,8 @@ public class SplashActivty extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
+            SharedPrefUtil.getInstance(this).put("name",user.getDisplayName());
+            SharedPrefUtil.getInstance(this).put("email",user.getEmail());
             userNameModel.setName(user.getDisplayName());
             userNameModel.setEmail(user.getEmail());
             userNameModel.setUid(user.getUid());

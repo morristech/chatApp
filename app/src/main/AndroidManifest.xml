@@ -18,12 +18,14 @@
         </activity>
         <activity android:name=".MainActivity" />
 
-        <service android:name=".extra.FirebaseIDService">
+        <service android:name=".extra.FirebaseIDService" android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".extra.MyFirebaseMessagingService">
+        <service android:name=".extra.MyFirebaseMessagingService" android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
