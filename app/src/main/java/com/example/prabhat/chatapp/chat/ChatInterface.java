@@ -2,6 +2,8 @@ package com.example.prabhat.chatapp.chat;
 
 import android.content.Context;
 
+import com.example.prabhat.chatapp.model.ChatModel;
+
 /**
  * Created by prabhat on 15/1/18.
  */

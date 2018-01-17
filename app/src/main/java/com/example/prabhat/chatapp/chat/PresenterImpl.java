@@ -1,11 +1,11 @@
 package com.example.prabhat.chatapp.chat;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.prabhat.chatapp.extra.Constants;
 import com.example.prabhat.chatapp.extra.SharedPrefUtil;
+import com.example.prabhat.chatapp.model.ChatModel;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

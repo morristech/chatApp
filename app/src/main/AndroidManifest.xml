@@ -31,7 +31,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".chat.ChatActivity"></activity>
+        <activity android:name=".chat.ChatActivity"
+            android:theme="@style/My">
+
+        </activity>
     </application>
 
 </manifest>

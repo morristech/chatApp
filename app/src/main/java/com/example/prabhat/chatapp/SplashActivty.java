@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.prabhat.chatapp.extra.SharedPrefUtil;
+import com.example.prabhat.chatapp.model.UserNameModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
@@ -137,7 +137,7 @@ public class SplashActivty extends AppCompatActivity {
                 } else {
                     // User does not exist. NOW call createUserWithEmailAndPassword
                     updateUI(user);
-                    ref.child("users").child(uid).push().setValue(userNameModel);
+                    //ref.child("users").child(uid).push().setValue(userNameModel);
 
                     // Your previous code here.
 

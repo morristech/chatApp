@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.prabhat.chatapp.R;
+import com.example.prabhat.chatapp.model.ChatModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;

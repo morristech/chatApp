@@ -1,4 +1,4 @@
-package com.example.prabhat.chatapp;
+package com.example.prabhat.chatapp.model;
 
 /**
  * Created by prabhat on 13/1/18.

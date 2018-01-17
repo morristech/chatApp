@@ -6,11 +6,55 @@
     android:layout_height="match_parent"
     tools:context="com.example.prabhat.chatapp.chat.ChatActivity">
 
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:paddingBottom="5dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:textSize="8sp"
+                android:layout_height="wrap_content"
+                android:text="status" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lastSeen"
+            android:layout_width="wrap_content"
+            android:text="Last Seen"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatRecycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/editText">
+        android:layout_above="@+id/editText"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="8dp">
 
     </android.support.v7.widget.RecyclerView>
 
