@@ -8,6 +8,16 @@ public class UserStatusModel {
     boolean isOnline;
     String lastSeen;
 
+    public String getTyping() {
+        return typing;
+    }
+
+    public void setTyping(String typing) {
+        this.typing = typing;
+    }
+
+    String typing;
+
     public boolean getIsOnline() {
         return isOnline;
     }

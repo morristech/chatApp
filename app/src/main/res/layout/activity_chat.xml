@@ -26,12 +26,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:textSize="8sp"
+                android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:text="status" />
 
@@ -40,6 +41,7 @@
         <TextView
             android:id="@+id/lastSeen"
             android:layout_width="wrap_content"
+            android:textColor="@color/white"
             android:text="Last Seen"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

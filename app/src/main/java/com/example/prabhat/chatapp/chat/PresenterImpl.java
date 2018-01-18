@@ -25,9 +25,9 @@ public class PresenterImpl implements ChatInterface.Presenter {
     }
 
     @Override
-    public void sendMessageToFirebaseUser(final Context context, final ChatModel chatModel, String string) {
+    public void sendMessageToFirebaseUser(String nameString, final Context context, final ChatModel chatModel, String string) {
         FcmNotificationBuilder.initialize().firebaseToken(SharedPrefUtil.getInstance(context).getString(Constants.FIREBASE_REC_TOKEN)).recToken(SharedPrefUtil.getInstance(context).getString(Constants.FIREBASE_REC_TOKEN))
-                .message("hello").title("New Mess").send();
+                .message(chatModel.getMessage()).title("New Message From " + " " + nameString).send();
         final String room_type_1 = chatModel.getSenderUid() + "_" + chatModel.getReceiverUid();
         final String room_type_2 = chatModel.getReceiverUid() + "_" + chatModel.getSenderUid();
         // view.getMessageSuccess(chatModel);

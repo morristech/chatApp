@@ -16,7 +16,7 @@ public class ChatInterface {
     }
 
     public interface Presenter {
-        void sendMessageToFirebaseUser(Context context, ChatModel chatModel, String string);
+        void sendMessageToFirebaseUser(String nameString, Context context, ChatModel chatModel, String string);
 
         void getMessageFromFirebaseUser(String senderId, String recId);
     }

@@ -16,7 +16,6 @@ import com.example.prabhat.chatapp.R;
 import com.example.prabhat.chatapp.Utils;
 import com.example.prabhat.chatapp.extra.SharedPrefUtil;
 import com.example.prabhat.chatapp.model.ChatModel;
-import com.example.prabhat.chatapp.model.UserNameModel;
 import com.example.prabhat.chatapp.model.UserStatusModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,7 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.example.prabhat.chatapp.MainActivity.RECEIVERID;
@@ -41,40 +39,49 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
     private PresenterImpl presenter;
     private Context context;
     private String nameString;
-    private TextView name,status,lastSeen;
+    private TextView name, status, lastSeen;
 
 
     private String recId, senderId;
     private List<ChatModel> chatModels = new ArrayList<>();
     ChatAdapter chatAdapter;
+    private UserStatusModel userStatusModel;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat);
+        lastSeen = findViewById(R.id.lastSeen);
+        userStatusModel = new UserStatusModel();
         nameString = getIntent().getStringExtra(REC_USER_NAME);
         recId = getIntent().getStringExtra(RECEIVERID);
+        userId = SharedPrefUtil.getInstance(this).getString(UID);
         senderId = SharedPrefUtil.getInstance(this).getString(UID);
         bindViews();
-
         name.setText(nameString);
         setStatus();
-       // getRecFirebaseId();
+        // getRecFirebaseId();
     }
 
     private void setStatus() {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child(USER_TABLE).child(recId).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.child(USER_TABLE).child(recId).child("status").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               UserStatusModel userStatusModel = dataSnapshot.getValue(UserStatusModel.class);
-               if (userStatusModel.getIsOnline())
-               {
-                   status.setText("Online");
-               }else {
-                   status.setText("offline");
-               }
+                UserStatusModel userStatusModel = dataSnapshot.getValue(UserStatusModel.class);
+                if (userStatusModel != null) {
+                    lastSeen.setText(userStatusModel.getLastSeen());
+                    if (userStatusModel.getIsOnline()) {
+                        status.setText("Online");
+                        lastSeen.setVisibility(View.GONE);
+                    } else {
+                        status.setText("offline");
+                        lastSeen.setVisibility(View.VISIBLE);
+                    }
+                }
+
 
             }
 
@@ -135,12 +142,16 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
 //    }
 
     private void sendData() {
-        ChatModel chatModel = new ChatModel();
-        chatModel.setMessage(editText.getText().toString().trim());
-        chatModel.setSenderUid(senderId);
-        chatModel.setReceiverUid(recId);
-        chatModel.setTimestamp(Utils.getDummyDateAndTime());
-        presenter.sendMessageToFirebaseUser(context, chatModel, SharedPrefUtil.getInstance(context).getString(FIREBASE_TOKEN));
+        if (!editText.getText().toString().trim().isEmpty()) {
+            ChatModel chatModel = new ChatModel();
+            chatModel.setMessage(editText.getText().toString().trim());
+            chatModel.setSenderUid(senderId);
+            chatModel.setReceiverUid(recId);
+            chatModel.setTimestamp(Utils.getDummyDateAndTime());
+            presenter.sendMessageToFirebaseUser(nameString, context, chatModel, SharedPrefUtil.getInstance(context).getString(FIREBASE_TOKEN));
+            editText.setText("");
+        }
+
     }
 
     @Override
@@ -154,5 +165,19 @@ public class ChatActivity extends AppCompatActivity implements ChatInterface.Vie
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        userStatusModel.setIsOnline(false);
+        userStatusModel.setLastSeen(Utils.getTime());
+        Utils.updateuserStatus(userStatusModel, userId);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        userStatusModel.setIsOnline(true);
+        userStatusModel.setLastSeen(Utils.getTime());
+        Utils.updateuserStatus(userStatusModel, userId);
+    }
 }

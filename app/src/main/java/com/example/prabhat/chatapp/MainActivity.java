@@ -32,7 +32,6 @@ import java.util.HashMap;
 
 import static com.example.prabhat.chatapp.SplashActivty.NAME;
 import static com.example.prabhat.chatapp.extra.Constants.UID;
-import static com.example.prabhat.chatapp.extra.Constants.USER_STATUS_TABLE;
 import static com.example.prabhat.chatapp.extra.FirebaseIDService.FIREBASE_TOKEN;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(getIntent().getStringExtra(NAME));
         userId = SharedPrefUtil.getInstance(this).getString(UID);
         updateUserData();
-        updateuserStatus(userStatusModel);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -68,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userStatusModel.setLastSeen(Utils.getTime());
+                userStatusModel.setIsOnline(false);
+                Utils.updateuserStatus(userStatusModel, userId);
                 FirebaseAuth.getInstance().signOut();
                 mGoogleSignInClient.signOut().addOnCompleteListener(MainActivity.this,
                         new OnCompleteListener<Void>() {
@@ -81,32 +82,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getUsers();
-
-
         itemArrayAdapter = new Adapter(itemList, this, userId);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(itemArrayAdapter);
-
-
     }
 
-    private void updateuserStatus(final UserStatusModel userStatusModel) {
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, Object> result = new HashMap<>();
-                result.put(USER_STATUS_TABLE, userStatusModel);
-                ref.child("users").child(userId).updateChildren(result);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     private void updateUserData() {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -156,20 +137,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         userStatusModel.setIsOnline(false);
-        userStatusModel.setLastSeen(Utils.getDummyDateAndTime());
-        updateuserStatus(userStatusModel);
+        userStatusModel.setLastSeen(Utils.getTime());
+        Utils.updateuserStatus(userStatusModel, userId);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         userStatusModel.setIsOnline(true);
-        userStatusModel.setLastSeen(Utils.getDummyDateAndTime());
-        updateuserStatus(userStatusModel);
+        userStatusModel.setLastSeen(Utils.getTime());
+        Utils.updateuserStatus(userStatusModel, userId);
     }
 
 }
